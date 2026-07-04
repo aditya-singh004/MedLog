@@ -240,12 +240,8 @@ For internet deployment, terminate TLS at a trusted proxy, set `COOKIE_SECURE=tr
 
 ## Screenshots
 
-Add project screenshots here after deployment:
+<img width="2846" height="1626" alt="image" src="https://github.com/user-attachments/assets/bcdf6df4-2c6c-46b5-87bd-deeebc899628" />
 
-- `[Patient dashboard]`
-- `[Reception appointment queue]`
-- `[Doctor consent-gated history]`
-- `[Admin audit log]`
 
 ## Project layout
 
