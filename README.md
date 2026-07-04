@@ -4,7 +4,6 @@ MedLog is a production-style FastAPI application for multi-hospital appointment 
 
 <img width="2846" height="1626" alt="image" src="https://github.com/user-attachments/assets/bcdf6df4-2c6c-46b5-87bd-deeebc899628" />
 
-The project deliberately does **not** use AI. Its difficult engineering work is authorization, tenant isolation, workflow validation, expiring consent, auditing, and durable care history.
 
 ## The problem
 
