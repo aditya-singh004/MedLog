@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#176b87">
+  <meta name="csrf-token" content="{{ request.state.csrf_token|default('') }}">
+  <title>{% block title %}MedLog{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="{{ url_for('static', path='/css/main.css') }}" rel="stylesheet">
+</head>
+<body class="{% if user and request.url.path != '/' %}dashboard-body{% else %}public-body{% endif %}">
+{% set current_path = request.url.path %}
+{% if user %}
+  {% if user.role.value == 'PATIENT' %}
+    {% set dashboard_url = '/patient/dashboard' %}{% set notifications_url = '/patient/notifications' %}
+  {% elif user.role.value == 'RECEPTIONIST' %}
+    {% set dashboard_url = '/receptionist/dashboard' %}{% set notifications_url = '/receptionist/notifications' %}
+  {% elif user.role.value == 'DOCTOR' %}
+    {% set dashboard_url = '/doctor/dashboard' %}{% set notifications_url = '/doctor/notifications' %}
+  {% else %}
+    {% set dashboard_url = '/admin/dashboard' %}{% set notifications_url = '/admin/dashboard' %}
+  {% endif %}
+{% endif %}
+{% if user and current_path != '/' %}
+
+  {% macro nav_link(href, label, icon, prefix='', exact=false) -%}
+    {% set target = prefix or href %}
+    <a href="{{ href }}" class="sidebar-link {% if current_path == target or (not exact and target != '/' and current_path.startswith(target + '/')) %}active{% endif %}">
+      <i class="bi {{ icon }}"></i><span>{{ label }}</span>
+    </a>
+  {%- endmacro %}
+  {% macro role_navigation() -%}
+    <div class="sidebar-label">Workspace</div>
+    {% if user.role.value == 'PATIENT' %}
+      {{ nav_link('/patient/dashboard','Dashboard','bi-grid-1x2-fill') }}
+      {{ nav_link('/patient/hospitals','Hospitals','bi-hospital') }}
+      {{ nav_link('/patient/appointments/request','Request appointment','bi-calendar2-plus', '/patient/appointments/request') }}
+      {{ nav_link('/patient/appointments','My appointments','bi-calendar2-check', '/patient/appointments', true) }}
+      {{ nav_link('/patient/medical-history','Medical history','bi-activity') }}
+      {{ nav_link('/patient/documents','Documents','bi-file-earmark-medical') }}
+      {{ nav_link('/patient/consents','Consent requests','bi-shield-check') }}
+      {{ nav_link('/patient/notifications','Notifications','bi-bell') }}
+    {% elif user.role.value == 'RECEPTIONIST' %}
+      {{ nav_link('/receptionist/dashboard','Dashboard','bi-grid-1x2-fill') }}
+      {{ nav_link('/receptionist/appointments/requests','Appointment requests','bi-inbox', '/receptionist/appointments/requests') }}
+      {{ nav_link('/receptionist/queue','Appointments','bi-calendar3', '/receptionist/appointments') }}
+      {{ nav_link('/receptionist/queue','Patient queue','bi-people', '/receptionist/queue') }}
+      {{ nav_link('/receptionist/queue','Doctors','bi-person-badge', '/receptionist/queue') }}
+      {{ nav_link('/receptionist/notifications','Notifications','bi-bell') }}
+    {% elif user.role.value == 'DOCTOR' %}
+      {{ nav_link('/doctor/dashboard','Dashboard','bi-grid-1x2-fill') }}
+      {{ nav_link('/doctor/appointments','My appointments','bi-calendar2-week', '/doctor/appointments') }}
+      {{ nav_link('/doctor/appointments','Patient history','bi-journal-medical', '/doctor/patients') }}
+      {{ nav_link('/doctor/appointments','Prescriptions','bi-capsule', '/doctor/prescriptions') }}
+      {{ nav_link('/doctor/notifications','Notifications','bi-bell') }}
+    {% else %}
+      {{ nav_link('/admin/dashboard','Dashboard','bi-grid-1x2-fill') }}
+      {{ nav_link('/admin/hospitals','Hospitals','bi-hospital') }}
+      {{ nav_link('/admin/departments','Departments','bi-diagram-3') }}
+      {{ nav_link('/admin/doctors','Doctors','bi-person-badge') }}
+      {{ nav_link('/admin/receptionists','Receptionists','bi-headset') }}
+      {{ nav_link('/admin/audit-logs','Audit logs','bi-clipboard2-pulse') }}
+    {% endif %}
+  {%- endmacro %}
+
+  <aside class="sidebar d-none d-lg-flex">
+    <a class="brand" href="{{ dashboard_url }}"><span class="brand-mark"><i class="bi bi-shield-plus"></i></span><span>MedLog<small>Connected care</small></span></a>
+    <nav class="sidebar-nav">{{ role_navigation() }}</nav>
+    <div class="sidebar-trust"><i class="bi bi-shield-lock-fill"></i><div><strong>Protected workspace</strong><span>Consent-first access</span></div></div>
+    <a href="/logout" class="sidebar-link sidebar-logout"><i class="bi bi-box-arrow-left"></i><span>Sign out</span></a>
+  </aside>
+
+  <div class="offcanvas offcanvas-start mobile-sidebar" tabindex="-1" id="mobileSidebar" aria-labelledby="mobileSidebarLabel">
+    <div class="offcanvas-header"><a class="brand" href="{{ dashboard_url }}"><span class="brand-mark"><i class="bi bi-shield-plus"></i></span><span id="mobileSidebarLabel">MedLog</span></a><button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button></div>
+    <div class="offcanvas-body"><nav class="sidebar-nav">{{ role_navigation() }}</nav><a href="/logout" class="sidebar-link sidebar-logout"><i class="bi bi-box-arrow-left"></i><span>Sign out</span></a></div>
+  </div>
+
+  <div class="dashboard-shell">
+    <header class="topbar">
+      <div class="d-flex align-items-center gap-3"><button class="icon-button d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar" aria-label="Open navigation"><i class="bi bi-list"></i></button><div class="topbar-context"><span>Secure healthcare workspace</span><strong>{% block topbar_title %}MedLog{% endblock %}</strong></div></div>
+      <div class="topbar-actions">
+        <a href="{{ notifications_url }}" class="icon-button position-relative" aria-label="Notifications"><i class="bi bi-bell"></i><span class="notification-dot"></span></a>
+        <div class="user-menu"><span class="avatar">{{ user.full_name[:1]|upper }}</span><div class="d-none d-sm-block"><strong>{{ user.full_name }}</strong><span>{{ user.role.value|replace('_',' ')|title }}</span></div><a href="/logout" class="icon-button d-none d-md-inline-flex" title="Sign out"><i class="bi bi-box-arrow-right"></i></a></div>
+      </div>
+    </header>
+    <main class="dashboard-content">
+      {% if request.query_params.get('message') %}<div class="alert alert-{{ request.query_params.get('kind','success') }} alert-dismissible fade show app-alert" role="alert"><i class="bi {% if request.query_params.get('kind') == 'danger' %}bi-exclamation-circle{% else %}bi-check-circle{% endif %}"></i><span>{{ request.query_params.get('message') }}</span><button class="btn-close" data-bs-dismiss="alert"></button></div>{% endif %}
+      {% if error %}<div class="alert alert-danger app-alert"><i class="bi bi-exclamation-circle"></i><span>{{ error }}</span></div>{% endif %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+{% else %}
+  <nav class="public-nav navbar navbar-expand-lg"><div class="container"><a class="brand" href="/"><span class="brand-mark"><i class="bi bi-shield-plus"></i></span><span>MedLog<small>Connected care</small></span></a><button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#publicNav"><span class="navbar-toggler-icon"></span></button><div class="collapse navbar-collapse" id="publicNav"><div class="navbar-nav ms-auto align-items-lg-center gap-lg-2"><a class="nav-link" href="/#how-it-works">How it works</a><a class="nav-link" href="/#platform">Platform</a>{% if user %}<a class="btn btn-primary" href="{{ dashboard_url }}"><i class="bi bi-grid me-1"></i> Go to dashboard</a>{% else %}<a class="btn btn-ghost" href="/login">Sign in</a><a class="btn btn-primary" href="/register">Create account</a>{% endif %}</div></div></div></nav>
+  <main>{% if request.query_params.get('message') %}<div class="container pt-3"><div class="alert alert-{{ request.query_params.get('kind','success') }} app-alert"><i class="bi bi-check-circle"></i><span>{{ request.query_params.get('message') }}</span></div></div>{% endif %}{% block public_content %}{% block content_public %}{% endblock %}{% endblock %}</main>
+  <footer class="public-footer"><div class="container"><div><a class="brand footer-brand" href="/"><span class="brand-mark"><i class="bi bi-shield-plus"></i></span><span>MedLog</span></a><p>Consent-first healthcare continuity, built around the patient.</p></div><div class="footer-meta"><span><i class="bi bi-lock"></i> Secure by design</span><span>© 2026 MedLog</span></div></div></footer>
+{% endif %}
+<div class="modal fade" id="confirmModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-body p-4 text-center"><span class="modal-warning-icon"><i class="bi bi-exclamation-triangle"></i></span><h4 class="mt-3">Please confirm</h4><p class="text-muted" id="confirmModalMessage">This action cannot be undone.</p><div class="d-flex gap-2 justify-content-center"><button class="btn btn-light" data-bs-dismiss="modal">Go back</button><button class="btn btn-danger" id="confirmModalAction">Confirm action</button></div></div></div></div></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', path='/js/app.js') }}"></script>
+</body></html>

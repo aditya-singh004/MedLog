@@ -1,0 +1,6 @@
+<div class="row g-3 mb-4">
+{% set icons = ['bi-calendar2-check','bi-shield-check','bi-journal-medical','bi-bell'] %}
+{% for label, value in cards %}
+  <div class="col-6 col-xl-3"><div class="card metric-card"><div class="card-body"><span class="metric-icon"><i class="bi {{ icons[loop.index0 % 4] }}"></i></span><div class="metric-copy"><div class="metric-label">{{ label }}</div><div class="metric-value">{{ value }}</div></div></div></div></div>
+{% endfor %}
+</div>

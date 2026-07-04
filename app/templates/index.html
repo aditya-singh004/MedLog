@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}MedLog · Your health history, securely connected{% endblock %}
+{% block public_content %}
+<section class="landing-hero">
+  <div class="container"><div class="row align-items-center g-5">
+    <div class="col-lg-7">
+      <div class="hero-kicker"><span></span> Consent-first connected healthcare</div>
+      <h1>Your health history travels with you <em>— securely.</em></h1>
+      <p class="hero-copy">MedLog helps patients request appointments, hospitals manage care workflows, and doctors access medical history only with patient consent.</p>
+      <div class="hero-actions">{% if user %}<a class="btn btn-primary btn-lg" href="{{ dashboard_url }}"><i class="bi bi-grid-1x2 me-2"></i>Go to dashboard</a>{% else %}<a class="btn btn-primary btn-lg" href="/register"><i class="bi bi-person-plus me-2"></i>Create patient account</a><a class="btn btn-hero-secondary btn-lg" href="/login">Sign in <i class="bi bi-arrow-right ms-1"></i></a>{% endif %}</div>
+      <div class="hero-proof"><div class="proof-avatars"><span><i class="bi bi-person"></i></span><span><i class="bi bi-hospital"></i></span><span><i class="bi bi-person-badge"></i></span></div><div><strong>One secure care network</strong><small>Patients, hospitals, and doctors—connected with consent.</small></div></div>
+    </div>
+    <div class="col-lg-5"><div class="trust-dashboard">
+      <div class="trust-dashboard-head"><div><span class="live-dot"></span> Security controls active</div><i class="bi bi-three-dots"></i></div>
+      <div class="trust-shield"><span><i class="bi bi-shield-check"></i></span><div><small>Patient protection</small><strong>Consent verified</strong></div><span class="status-approved badge">ACTIVE</span></div>
+      <div class="trust-list"><div><span><i class="bi bi-clock-history"></i></span><div><strong>Time-limited consent</strong><small>Access expires automatically</small></div><i class="bi bi-check-circle-fill"></i></div><div><span><i class="bi bi-building-lock"></i></span><div><strong>Hospital-scoped operations</strong><small>Staff see only their organization</small></div><i class="bi bi-check-circle-fill"></i></div><div><span><i class="bi bi-clipboard2-pulse"></i></span><div><strong>Audited history access</strong><small>Every sensitive view is recorded</small></div><i class="bi bi-check-circle-fill"></i></div><div><span><i class="bi bi-file-earmark-lock"></i></span><div><strong>Secure prescriptions & reports</strong><small>Patient-owned, durable records</small></div><i class="bi bi-check-circle-fill"></i></div></div>
+      <div class="trust-footer"><i class="bi bi-lock-fill"></i> Protected healthcare workspace</div>
+    </div></div>
+  </div></div>
+</section>
+
+<section class="landing-section" id="platform"><div class="container">
+  <div class="section-heading"><span>One platform, every care role</span><h2>Designed around how healthcare actually moves</h2><p>A focused workspace for each person in the care journey, with privacy built into every handoff.</p></div>
+  <div class="row g-4">
+    <div class="col-md-6 col-xl-3"><div class="feature-card"><span class="feature-icon patient"><i class="bi bi-person-heart"></i></span><h4>For patients</h4><p>Request care, carry your medical timeline, upload reports, and control every history-access decision.</p><a href="/register">Create your account <i class="bi bi-arrow-right"></i></a></div></div>
+    <div class="col-md-6 col-xl-3"><div class="feature-card"><span class="feature-icon hospital"><i class="bi bi-hospital"></i></span><h4>For hospitals</h4><p>Coordinate departments, clinical teams, appointment requests, and queues in one operational view.</p><a href="/login">Open workspace <i class="bi bi-arrow-right"></i></a></div></div>
+    <div class="col-md-6 col-xl-3"><div class="feature-card"><span class="feature-icon doctor"><i class="bi bi-person-badge"></i></span><h4>For doctors</h4><p>Run consultations with the context you need, granted explicitly by the patient and fully audited.</p><a href="/login">Doctor sign in <i class="bi bi-arrow-right"></i></a></div></div>
+    <div class="col-md-6 col-xl-3"><div class="feature-card"><span class="feature-icon consent"><i class="bi bi-shield-lock"></i></span><h4>Consent-first records</h4><p>A continuous history across hospitals without sacrificing patient ownership or privacy.</p><a href="#how-it-works">See how it works <i class="bi bi-arrow-down"></i></a></div></div>
+  </div>
+</div></section>
+
+<section class="workflow-section" id="how-it-works"><div class="container">
+  <div class="section-heading"><span>Simple, accountable workflow</span><h2>From request to a richer medical history</h2></div>
+  <div class="workflow-track"><div class="workflow-step"><span>01</span><i class="bi bi-calendar2-plus"></i><div><h5>Patient requests</h5><p>Choose a hospital, department, preferred date, and describe symptoms.</p></div></div><i class="bi bi-arrow-right workflow-arrow"></i><div class="workflow-step"><span>02</span><i class="bi bi-calendar2-check"></i><div><h5>Receptionist schedules</h5><p>Assign the right doctor and confirm an available time slot.</p></div></div><i class="bi bi-arrow-right workflow-arrow"></i><div class="workflow-step"><span>03</span><i class="bi bi-stethoscope"></i><div><h5>Doctor consults</h5><p>Review approved context, diagnose, and create a prescription.</p></div></div><i class="bi bi-arrow-right workflow-arrow"></i><div class="workflow-step"><span>04</span><i class="bi bi-journal-check"></i><div><h5>History updates</h5><p>The new record becomes part of the patient’s permanent timeline.</p></div></div></div>
+</div></section>
+
+<section class="landing-cta"><div class="container"><div class="cta-panel"><div><span><i class="bi bi-shield-check"></i> Care continuity without compromise</span><h2>Ready to take control of your health history?</h2><p>Join a consent-first platform built for safer, better-connected care.</p></div>{% if user %}<a class="btn btn-light btn-lg" href="{{ dashboard_url }}">Open dashboard <i class="bi bi-arrow-right ms-2"></i></a>{% else %}<a class="btn btn-light btn-lg" href="/register">Create patient account <i class="bi bi-arrow-right ms-2"></i></a>{% endif %}</div></div></section>
+{% endblock %}
