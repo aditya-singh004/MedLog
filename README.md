@@ -1,4 +1,4 @@
-# MedLog — Consent-Based Medical Records & Appointment Management System
+# MedLog - Consent-Based Medical Records & Appointment Management System
 
 MedLog is a production-style FastAPI application for multi-hospital appointment operations and patient-controlled longitudinal medical records. Patients can seek care at any registered hospital while retaining control over whether a doctor may view records created elsewhere.
 
